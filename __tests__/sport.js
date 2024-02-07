@@ -647,7 +647,7 @@ describe("Sport Application", function () {
     const dateToday = new Date();
     res = await agent.get("/viewReports");
     let csrfToken = extractCsrfToken(res);
-    console.log(csrfToken);
+    // console.log(csrfToken);
     res = await agent.post(`/viewReports`).send({
       date1: new Date(
         new Date().setDate(dateToday.getDate() - 1)
