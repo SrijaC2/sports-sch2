@@ -176,7 +176,8 @@ app.post("/users", async (request, response) => {
       response.redirect("/sport");
     });
   } catch (error) {
-    console.log(error);
+    console.log("err", error);
+
     request.flash("error", error.errors[0].message);
     return response.redirect("/signup");
   }
