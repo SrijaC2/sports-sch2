@@ -1,16 +1,18 @@
 name: Auto test solution
 on: push
+
+# Environment Variables Configuration
 env:
   PG_DATABASE: wd-sports-test2
   PG_USER: postgres
-  PG_PASSWORD: chinni06
+  PG_PASSWORD: ${{ secrets.POSTGRES_PW }}
 jobs:
-  # Label of the container job
+  # Job to run tests
   run-tests:
     # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest
 
-    # Service containers to run with `container-job`
+    # Service container for PostgreSQL
     services:
       # Label used to access the service container
       postgres:
@@ -19,7 +21,7 @@ jobs:
         # Provide the password for postgres
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: chinni06
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PW }}
           POSTGRES_DB: wd-sports-test2
         # Set health checks to wait until postgres has started
         options: >-
@@ -31,17 +33,19 @@ jobs:
           - 5432:5432
 
     steps:
-      # Downloads a copy of the code in your repository before running CI tests
+       # Checkout repository code
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      # Performs a clean installation of all dependencies in the `package.json` file
-      # For more information, see https://docs.npmjs.com/cli/ci.html
+      # Install dependencies
       - name: Install dependencies
         run: npm ci
 
+      # Run unit tests
       - name: Run unit tests
         run:  npm test
+
+       # Run the application and integration tests
       - name: Run the app
         id: run-app
         run: |
@@ -56,38 +60,47 @@ jobs:
         run: |
           npm install cypress cypress-json-results
           npx cypress run
+
+  # Deployment Job
   deploy:
     name: Deploy
     needs: [run-tests]
     runs-on: ubuntu-latest
 
     steps:
+      # Deploy to production
       - name: Deploy to production
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
           service-id: ${{ secrets.SERVICE_ID }}
           api-key: ${{ secrets.RENDER_API_KEY }}
+
+  # Error Reporting and Notification Job
   notify-error:
     needs: [run-tests, deploy]
     runs-on: ubuntu-latest
     if: failure()
 
     steps:
+      # Send error notification to Slack
       - name: Send error notification to Slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
           payload: |
             {
-            "text": "Error in CI/CD Pipeline \n${{ github.workflow }} failed. Check the workflow run for details:  https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            "text": "Error in CI/CD Pipeline \n$ Workflow: {{ github.workflow }} failed. Check the workflow run for details:  https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+  # Success Notification Job
   notify-success:
     needs: [run-tests, deploy]
     runs-on: ubuntu-latest
     if: success()
 
     steps:
+      # Send success notification to Slack
       - name: Send success notification to Slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
