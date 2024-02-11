@@ -78,7 +78,22 @@ jobs:
         with:
           payload: |
             {
-            "text": "Error in CI/CD Pipeline"
+            "text": "Error in CI/CD Pipeline \n${{ github.workflow }} failed. Check the workflow run for details: ${{ github.run_url }} "
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+  notify-success:
+    needs: [run-tests, deploy]
+    runs-on: ubuntu-latest
+    if: success()
+
+    steps:
+      - name: Send success notification to Slack
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "CI/CD Pipeline completed successfully"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
