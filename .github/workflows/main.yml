@@ -67,3 +67,17 @@ jobs:
         with:
           service-id: ${{ secrets.SERVICE_ID }}
           api-key: ${{ secrets.RENDER_API_KEY }}
+  notify-error:
+    needs: [run-tests, deploy]
+    runs-on: ubuntu-latest
+    if: failure()
+
+    steps:
+      - name: Send error notification to Slack
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          status: failure
+          title: Error in CI/CD Pipeline
+          text: ${{ github.workflow }} failed. Check the workflow run for details: ${{ github.run_url }}
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
