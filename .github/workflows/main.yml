@@ -78,7 +78,7 @@ jobs:
         with:
           payload: |
             {
-            "text": "Error in CI/CD Pipeline \n${{ github.workflow }} failed. Check the workflow run for details:  ${GITHUB_SERVER_URL}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            "text": "Error in CI/CD Pipeline \n${{ github.workflow }} failed. Check the workflow run for details:  https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
