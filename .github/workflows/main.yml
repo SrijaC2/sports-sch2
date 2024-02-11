@@ -56,3 +56,14 @@ jobs:
         run: |
           npm install cypress cypress-json-results
           npx cypress run
+  deploy:
+    name: Deploy
+    needs: [run-tests]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to production
+        uses: srija/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
