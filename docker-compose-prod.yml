@@ -24,6 +24,6 @@ services:
       POSTGRES_USER: $PROD_USERNAME
       POSTGRES_DB: $PROD_DATABASE
       POSTGRES_PASSWORD: $PROD_PASSWORD
-    
+
 volumes:
   pg-prod-data:

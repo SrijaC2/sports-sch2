@@ -33,7 +33,7 @@ jobs:
           - 5432:5432
 
     steps:
-       # Checkout repository code
+      # Checkout repository code
       - name: Check out repository code
         uses: actions/checkout@v4
 
@@ -43,9 +43,9 @@ jobs:
 
       # Run unit tests
       - name: Run unit tests
-        run:  npm test
+        run: npm test
 
-       # Run the application and integration tests
+        # Run the application and integration tests
       - name: Run the app
         id: run-app
         run: |
