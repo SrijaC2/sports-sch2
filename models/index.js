@@ -20,7 +20,7 @@ if (config.use_env_variable) {
     config.password,
     config
   );
-  console.log(config);
+  // console.log(config);
 }
 
 fs.readdirSync(__dirname)
