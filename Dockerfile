@@ -17,4 +17,10 @@ CMD npm run start
 
 
 
+
+
+
+
+
+
 # --ignore-scripts
