@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 describe("Sport Application", () => {
-  const baseUrl = "http://localhost:3500";
+  const baseUrl = "http://localhost:3000";
   beforeEach(() => {
     cy.visit(baseUrl);
   });
