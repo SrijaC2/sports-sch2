@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
 const process = require("process");
+const { consumers } = require("stream");
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
 const config = require(__dirname + "/../config/config.json")[env];
@@ -19,6 +20,7 @@ if (config.use_env_variable) {
     config.password,
     config
   );
+  console.log(config);
 }
 
 fs.readdirSync(__dirname)

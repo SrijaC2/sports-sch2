@@ -169,6 +169,7 @@ app.post("/users", async (request, response) => {
       role: request.body.role,
       password: hashedPwd,
     });
+    // console.log(user)
     request.login(user, (err) => {
       if (err) {
         console.log(err);
@@ -178,7 +179,7 @@ app.post("/users", async (request, response) => {
   } catch (error) {
     console.log("err", error);
 
-    request.flash("error", error.errors[0].message);
+    // request.flash("error", error.errors[0].message);
     return response.redirect("/signup");
   }
 });
