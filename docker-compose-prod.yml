@@ -27,5 +27,4 @@ services:
 
 volumes:
   pg-prod-data:
-
-  
+ 
