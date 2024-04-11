@@ -9,7 +9,7 @@
     "pretest": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create",
     "test": "NODE_ENV=test jest --detectOpenHandles",
     "prepare": "husky install ",
-    "clean:start": "npm run pretest  ",
+    "clean:start": "npm run pretest && NODE_ENV=test npm start ",
     "cy:test": "npx cypress run"
   },
   "lint-staged": {
