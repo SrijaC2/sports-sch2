@@ -1,0 +1,80 @@
+2024-04-12 15:29:38 +05:30: Fri, 12 Apr 2024 09:59:38 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:29:38 +05:30: Fri, 12 Apr 2024 09:59:38 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:29:38 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:29:38 +05:30: Fri, 12 Apr 2024 09:59:38 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:29:38 +05:30: Fri, 12 Apr 2024 09:59:38 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:29:38 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:29:38 +05:30: Fri, 12 Apr 2024 09:59:38 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:29:38 +05:30: Fri, 12 Apr 2024 09:59:38 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:29:38 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:29:38 +05:30: Fri, 12 Apr 2024 09:59:38 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:29:38 +05:30: Fri, 12 Apr 2024 09:59:38 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:29:38 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:29:38 +05:30: Fri, 12 Apr 2024 09:59:38 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:29:38 +05:30: Fri, 12 Apr 2024 09:59:38 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:29:38 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:29:39 +05:30: Fri, 12 Apr 2024 09:59:39 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:29:39 +05:30: Fri, 12 Apr 2024 09:59:39 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:29:39 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:29:39 +05:30: Fri, 12 Apr 2024 09:59:39 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:29:39 +05:30: Fri, 12 Apr 2024 09:59:39 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:29:39 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:29:39 +05:30: Fri, 12 Apr 2024 09:59:39 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:29:39 +05:30: Fri, 12 Apr 2024 09:59:39 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:29:39 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:48:44 +05:30: Fri, 12 Apr 2024 10:18:44 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:48:44 +05:30: Fri, 12 Apr 2024 10:18:44 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:48:44 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:48:44 +05:30: Fri, 12 Apr 2024 10:18:44 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:48:44 +05:30: Fri, 12 Apr 2024 10:18:44 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:48:44 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:48:44 +05:30: Fri, 12 Apr 2024 10:18:44 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:48:44 +05:30: Fri, 12 Apr 2024 10:18:44 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:48:44 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:48:44 +05:30: Fri, 12 Apr 2024 10:18:44 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:48:44 +05:30: Fri, 12 Apr 2024 10:18:44 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:48:44 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:48:45 +05:30: Fri, 12 Apr 2024 10:18:45 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:48:45 +05:30: Fri, 12 Apr 2024 10:18:45 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:48:45 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:48:45 +05:30: Fri, 12 Apr 2024 10:18:45 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:48:45 +05:30: Fri, 12 Apr 2024 10:18:45 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:48:45 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:48:45 +05:30: Fri, 12 Apr 2024 10:18:45 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:48:45 +05:30: Fri, 12 Apr 2024 10:18:45 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:48:45 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2024-04-12 15:48:45 +05:30: Fri, 12 Apr 2024 10:18:45 GMT express-session deprecated undefined resave option; provide resave option at app.js:34:3
+2024-04-12 15:48:45 +05:30: Fri, 12 Apr 2024 10:18:45 GMT express-session deprecated undefined saveUninitialized option; provide saveUninitialized option at app.js:34:3
+2024-04-12 15:48:45 +05:30: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.

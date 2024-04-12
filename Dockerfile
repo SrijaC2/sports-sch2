@@ -5,7 +5,7 @@ EXPOSE 3000
 
 FROM base as production
 ENV NODE_ENV=production 
-RUN npm install 
+RUN npm install --ignore-scripts
 COPY . /app
 CMD node index.js
 
