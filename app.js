@@ -8,6 +8,11 @@ const { Sport, User, Sessions, playerSessions } = require("./models");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 app.use(bodyParser.json());
+require("dotenv").config();
+
+const i18next = require("./i18n");
+const middleware = require("i18next-http-middleware");
+app.use(middleware.handle(i18next));
 
 app.set("view engine", "ejs");
 const path = require("path");
@@ -28,6 +33,7 @@ app.use(flash());
 
 const bcrypt = require("bcrypt");
 const sport = require("./models/sport");
+const { isIPv6 } = require("net");
 const saltRounds = 10;
 
 app.use(
@@ -72,7 +78,6 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  // console.log("Serializing user in session", user.id);
   done(null, user.id);
 });
 
@@ -84,6 +89,62 @@ passport.deserializeUser((id, done) => {
     .catch((error) => {
       done(error, null);
     });
+});
+
+// Date Localization
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const locale = i18next.language;
+  const dateFormatter = new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  return dateFormatter.format(date);
+}
+
+//Time Localization
+function formatTime(timeString) {
+  const time = new Date(`2000-01-01T${timeString}`);
+  const locale = i18next.language;
+  const timeFormatter = new Intl.DateTimeFormat(locale, {
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  });
+
+  return timeFormatter.format(time);
+}
+
+// Error tracking and debugging
+const Sentry = require("@sentry/node");
+const { nodeProfilingIntegration } = require("@sentry/profiling-node");
+Sentry.init({
+  dsn: process.env.DSN,
+  integrations: [
+    new Sentry.Integrations.Http({ tracing: true }),
+    new Sentry.Integrations.Express({ app }),
+    nodeProfilingIntegration(),
+  ],
+  tracesSampleRate: 1.0,
+  profilesSampleRate: 1.0,
+});
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
+app.use(Sentry.Handlers.errorHandler());
+
+app.use(function onError(err, req, res, next) {
+  Sentry.captureException(err);
+  next(err);
+});
+
+app.get("/debug-sentry", function mainHandler(req, res) {
+  try {
+    throw new Error("My first Sentry error!");
+  } catch (err) {
+    Sentry.captureException(err);
+  }
 });
 
 app.get("/", async (request, response) => {
@@ -99,23 +160,32 @@ app.get(
   "/sport",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    // console.log(request.user);
     const loggedInUserRole = request.user.role;
-    // console.log(loggedInUserRole);
+    if (i18next.language == "dev") {
+      i18next.changeLanguage("en");
+    }
 
     try {
       const allSports = await Sport.getSports();
       const playSessions = await playerSessions.getSessions(request.user.id);
       const sessionIDs = playSessions.map((v) => v.session_id);
       const UserSessions = await Sessions.UserSessions(sessionIDs);
-      // console.log(UserSessions);
       const allUpcoming = await Sessions.UpSessions(UserSessions);
+      //Error
+      // allsports1
+
       if (request.accepts("html")) {
         response.render("sports", {
           allSports,
           role: loggedInUserRole,
           allUpcoming,
+          currentLang: i18next.language,
           csrfToken: request.csrfToken(),
+          t: i18next.t,
+          i18next: i18next,
+          currentDate: formatDate(new Date()),
+          formatDate,
+          formatTime,
         });
       } else {
         response.json({
@@ -124,16 +194,35 @@ app.get(
         });
       }
     } catch (error) {
+      Sentry.captureException(error);
       console.log(error);
     }
   }
 );
 
+app.post("/set-lang", (req, res) => {
+  try {
+    console.log("Current Language", i18next.language);
+    const selectedLang = req.body.language;
+    console.log("Selected Language", selectedLang);
+    i18next.changeLanguage(selectedLang);
+
+    setTimeout(() => {
+      console.log("Updated Language", i18next.language);
+    }, 500);
+
+    res.redirect(req.get("referer") || "/");
+  } catch (error) {
+    Sentry.captureException(error);
+    console.log(error);
+    return res.status(422).json(error);
+  }
+});
+
 app.post(
   "/sport",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    // console.log("Creating a sport", request.body);
     try {
       const sport = await Sport.addSport({
         title: request.body.title,
@@ -141,6 +230,7 @@ app.post(
       });
       return response.redirect("/sport");
     } catch (error) {
+      Sentry.captureException(error);
       console.log(error);
       return response.status(422).json(error);
     }
@@ -151,12 +241,12 @@ app.get("/signup", (request, response) => {
   response.render("signup", {
     title: "Signup",
     csrfToken: request.csrfToken(),
+    t: i18next.t,
   });
 });
 
 app.post("/users", async (request, response) => {
   const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
-  // console.log(hashedPwd);
   if (request.body.password.length < 8) {
     request.flash("error", "Password length can't less than 8");
     return response.redirect("/signup");
@@ -169,7 +259,6 @@ app.post("/users", async (request, response) => {
       role: request.body.role,
       password: hashedPwd,
     });
-    // console.log(user)
     request.login(user, (err) => {
       if (err) {
         console.log(err);
@@ -178,7 +267,6 @@ app.post("/users", async (request, response) => {
     });
   } catch (error) {
     console.log("err", error);
-
     // request.flash("error", error.errors[0].message);
     return response.redirect("/signup");
   }
@@ -192,9 +280,7 @@ app.post(
       request.flash("error", "Number of players needed can't less than 0");
       return response.redirect(`/sport/sessions/${request.params.sportId}`);
     }
-    // console.log(request.body);
     try {
-      // console.log("Sessions name", request.body.sessionName);
       const session = await Sessions.addSession({
         sessionName: request.body.sessionName,
         date: request.body.date,
@@ -204,10 +290,8 @@ app.post(
         userId: request.user.id,
         sportId: request.params.sportId,
       });
-      // console.log(session);
       const names = request.body.names;
       const nameArr = names.split(",");
-      // console.log(session.id);
       for (let i = 0; i < nameArr.length; i++) {
         await playerSessions.create({
           player_name: nameArr[i],
@@ -226,9 +310,13 @@ app.get("/login", (request, response) => {
   if (request.user) {
     return response.redirect("/sport");
   }
+  if (i18next.language == "dev") {
+    i18next.changeLanguage("en");
+  }
   return response.render("login", {
     title: "Login",
     csrfToken: request.csrfToken(),
+    t: i18next.t,
   });
 });
 
@@ -239,7 +327,6 @@ app.post(
     failureFlash: true,
   }),
   function (request, response) {
-    // console.log(request.user);
     response.redirect("/sport");
   }
 );
@@ -257,16 +344,16 @@ app.get(
   "/createSport",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response, next) => {
-    // console.log(request.user.id);
     const allSportsPart = await Sport.UsergetSports(request.user.id);
-    // console.log(allSportsPart);
     try {
       response.render("createSpt", {
         csrfToken: request.csrfToken(),
         allSportsPart,
+        t: i18next.t,
       });
     } catch (error) {
       console.log(error);
+      Sentry.captureException(error);
     }
   }
 );
@@ -275,7 +362,6 @@ app.get(
   "/sport/:sportId",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response, next) => {
-    // console.log("We have to consider sport with ID:", request.params.sportId);
     const sport = await Sport.findByPk(request.params.sportId);
     const allSessionPart = await Sessions.UsergetSession(
       request.user.id,
@@ -285,7 +371,6 @@ app.get(
       request.params.sportId
     );
     let allUpcoming = await Sessions.UpSessions(allSportSessions);
-    // console.log(allUpcoming);
     allUpcoming = await Sessions.UncancelSess(allUpcoming);
     const userRole = request.user.role;
     if (request.accepts("html")) {
@@ -332,15 +417,12 @@ app.delete(
   "/sport/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    // console.log("Delete a sport by ID: ", request.params.id);
     try {
       const session = await Sessions.SportSessions(request.params.id);
       const sessionIDs = session.map((v) => v.id);
-
       await playerSessions.deleteSession(sessionIDs);
       await Sessions.deleteSession(request.params.id);
       await Sport.remove(request.params.id);
-
       return response.json({ success: true });
     } catch (error) {
       console.log(error);
@@ -369,11 +451,9 @@ app.post(
   "/sport/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response, next) => {
-    // console.log("We have to update a Sport with ID:", request.params.id);
     const sport = await Sport.findByPk(request.params.id);
     try {
       const updatedSport = await Sport.setTitle(request.body.title, sport);
-      // console.log(updatedSport);
       return response.redirect(`/sport/${request.params.id}`);
     } catch (error) {
       console.log(error);
@@ -386,11 +466,9 @@ app.get(
   "/sport/partSession/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response, next) => {
-    // console.log("We have to consider sportSession with ID:", request.params.id);
     const Session = await Sessions.findByPk(request.params.id);
     const Players = await playerSessions.getPlayers(Session.id);
     const userId = request.user.id;
-    // console.log("Players", Players);
     const cs = request.csrfToken();
     if (request.accepts("html")) {
       try {
@@ -403,6 +481,7 @@ app.get(
         });
       } catch (error) {
         console.log(error);
+        Sentry.captureException(error);
       }
     } else {
       response.json({
@@ -418,17 +497,15 @@ app.delete(
   "/playerSession/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    // console.log("Delete a player by ID: ", request.params.id);
     try {
       const playerRecord = await playerSessions.findByPk(request.params.id);
       const Session = await Sessions.findByPk(playerRecord.session_id);
-      // console.log("1st", Session);
       await playerSessions.remove(request.params.id);
       await Sessions.incPlayerCount(Session);
-      // console.log("2nd", Session);
       return response.json({ success: true });
     } catch (error) {
       console.log(error);
+      Sentry.captureException(err);
       return response.status(422).json(error);
     }
   }
@@ -438,7 +515,6 @@ app.post(
   "/playerSession/player/:sessionId",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response, next) => {
-    // console.log("Joining in session:", request.user.id);
     const userId = request.user.id;
     try {
       const Session = await Sessions.findByPk(request.params.sessionId);
@@ -462,7 +538,6 @@ app.delete(
   "/playerSession/player/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
-    // console.log("Deleting a player");
     try {
       const Session = await Sessions.findByPk(request.params.id);
       await playerSessions.removeById(request.params.id, request.user.id);
@@ -517,7 +592,6 @@ app.post(
         venue: request.body.venue,
         playersNeeded: request.body.playersNeeded,
       });
-      // console.log(newSession);
       const Players = await playerSessions.getPlayers(Session.id);
       await playerSessions.deleteSession(request.params.id);
       const names = request.body.names;
@@ -526,7 +600,6 @@ app.post(
         let value = false;
         for (let j = 0; j < Players.length; j++) {
           if (Players[j].player_name === nameArr[i]) {
-            // console.log("individual palyers", Players[j]);
             await playerSessions.addPlayers({
               player_name: nameArr[i],
               session_id: newSession.id,
@@ -575,7 +648,6 @@ app.post(
   async (request, response) => {
     try {
       const Session = await Sessions.findByPk(request.params.id);
-      // console.log("Canceling Session");
       const CancelSession = await Session.update({
         canceled: true,
         message: request.body.message,
@@ -620,7 +692,6 @@ app.get(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     try {
-      // console.log(request.body);
       response.render("viewReports", {
         csrfToken: request.csrfToken(),
       });
@@ -648,15 +719,10 @@ app.post(
         request.body.date1,
         request.body.date2
       );
-      // console.log("filtered sessions", sessions);
       NoOfSess = sessions.length;
-
       let sportIDs = sessions.map((v) => v.sportId);
       sportIDs = new Set(sportIDs);
       sportIDs = Array.from(sportIDs);
-
-      // console.log(sportIDs, sportIDs.length);
-
       reports = [];
       for (let i = 0; i < sportIDs.length; i++) {
         const counter = await Sessions.count(sessions, sportIDs[i]);
@@ -668,13 +734,13 @@ app.post(
         };
         reports.push(obj);
       }
-      // console.log("reports", reports);
       response.redirect("/viewReportsResult");
     } catch (error) {
       console.log(error);
     }
   }
 );
+
 app.get(
   "/viewReportsResult",
   connectEnsureLogin.ensureLoggedIn(),
@@ -682,7 +748,6 @@ app.get(
     if (request.accepts("html")) {
       try {
         reports.sort((a, b) => b.count - a.count);
-        // console.log(reports);
         response.render("viewReportsResult", {
           NoOfSess,
           reports,

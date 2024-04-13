@@ -1,0 +1,31 @@
+<!-- languageSelector.ejs -->
+<%
+const languageMap = {
+  en: 'English',
+  es: 'español',
+  te: 'తెలుగు',
+  de: 'Deutsch',
+  hi: 'हिन्दी',
+  fr: 'Français'
+};
+%>
+
+<div class="inline-block text-center relative mr-3">
+    <div>
+      <button id="languageBtn" class="rounded-lg bg-blue-100 font-medium text-sm p-2 text-blue-900 hover:text-blue-600">
+        <%=languageMap[currentLang]%>
+      </button>
+    </div>
+    <div id="languageDropdown" class="absolute mt-2 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden">
+      <div class="py-1">
+        <form action="/set-lang" method="post">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <% Object.keys(languageMap).forEach(code => { %>
+          <button name="language" value="<%= code %>" type='submit' class="block px-4 py-2 text-sm text-gray-700">
+          <%= languageMap[code] %>
+          </button>
+        <% }); %>
+      </form>
+      </div>
+    </div>
+  </div>

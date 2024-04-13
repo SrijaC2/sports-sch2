@@ -1,0 +1,19 @@
+{
+    "AdminHeading": "Fonctions administratives",
+    "SignoutBtn": "Déconnexion",
+    "Heading": "Planificateur sportif",
+    "CreateSportLink": "Créer un sport",
+    "ViewReportsLink": "Voir les rapports",
+    "UpcomingHeading": "Vous avez les sessions suivantes à venir",
+    "UpcomingText": "Vous n'avez aucune session à venir disponible",
+    "AvailSportsHeading": "Liste des sports disponibles",
+    "Cricket": "Cricket",
+    "Tennis": "Tennis",
+    "BackBtn": "Retour",
+    "NewSportLabel": "Créer un nouveau sport",
+    "NewSportPlaceHolder": "Nom d'un sport",
+    "AddSportBtn": "Ajouter",
+    "ListSportsLabel": "Liste des sports créés",
+    "Cricket 1": "Cricket 1",
+    "Fully Booked": "Complet"
+}
