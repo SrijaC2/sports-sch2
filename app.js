@@ -147,6 +147,114 @@ app.get("/debug-sentry", function mainHandler(req, res) {
   }
 });
 
+app.post("/set-lang", (req, res) => {
+  try {
+    const selectedLang = req.body.language;
+    i18next.changeLanguage(selectedLang);
+    setTimeout(() => {
+      console.log("Updated Language", i18next.language);
+    }, 500);
+    res.redirect(req.get("referer") || "/");
+  } catch (error) {
+    Sentry.captureException(error);
+    console.log(error);
+    return res.status(422).json(error);
+  }
+});
+
+// Generative AI
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+
+async function askGemini(prompt) {
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    return text;
+  } catch (error) {
+    console.error("Error making a query to Gemini API:", error);
+    return null;
+  }
+}
+async function getDetailswithGemini(question, request) {
+  try {
+    const currDate = new Date().toISOString();
+    const systemPrompt =
+      "You are creating a sport sessions in a sports scheduler application. " +
+      "Users can provide input in a sentence describing a session of particular sport , potentially including venue,a date and time  explicitly or implicitly (e.g., 'today', 'tomorrow'). " +
+      "Your task is to analyze the input sentence, extracting the sport type, date and time if mentioned. " +
+      "If a date is provided , include it in the output in the format YYYY-MM-DD" +
+      "If a time is provided , include it in the output in the format hh:mm 24hr format" +
+      "otherwise, extract the sport type and analyze its urgency to decide on a date and time yourself. " +
+      `if exact date is not specified make sure to use the current date is ${currDate} to compute any relative dates.` +
+      "The output format should be consistent, sessionName : ,date: ,time: ,venue:" +
+      "the example output is sport: Cricket, sessionName: Cricket 1, date: 2024-06-12, time: 19:00, venue: Bangalore" +
+      "Return the output in the format 'sport: sessionName : date: time: venue:'. where date must and should be in the format YYYY-MM-DD and time should be in the format 24hr hh:mm" +
+      "Important make sure if sport is not specified in prompt return sport: null";
+    ("The prompt is:");
+    const suggestion = await askGemini(systemPrompt + " " + question);
+    if (suggestion) {
+      console.log("Response from Gemini API:", suggestion);
+      const regex =
+        /sport\s*:\s*(.*?),\s*sessionName\s*:\s*(.*?),\s*date\s*:\s*(.*?),\s*time\s*:\s*(.*?),\s*venue\s*:\s*(.*)/;
+      const matches = suggestion.match(regex);
+      if (matches) {
+        const sport = matches[1].trim();
+        const sessionName = matches[2].trim();
+        const date = matches[3].trim();
+        const time = matches[4].trim();
+        const venue = matches[5].trim();
+        const allSports = await Sport.getSports();
+        const foundSport = allSports.find(
+          (spt) => spt.dataValues.title === sport
+        );
+        if (foundSport) {
+          const sportId = foundSport.dataValues.id;
+          const session = await Sessions.addSession({
+            sessionName: sessionName,
+            date: date,
+            time: time,
+            venue: venue,
+            playersNeeded: 0,
+            userId: request.user.id,
+            sportId: sportId,
+          });
+          await playerSessions.create({
+            player_name: `${request.user.firstName} ${request.user.lastName}`,
+            player_id: request.user.id,
+            session_id: session.id,
+          });
+        } else {
+          console.log("Sport not found.");
+          request.flash(
+            "error",
+            "Sport not found. Add sport to create session"
+          );
+          return;
+        }
+      } else {
+        console.log("No matches found.");
+        request.flash("error", "Give more information about the session");
+        return;
+      }
+    } else {
+      console.log("No response received from GeminiAPI");
+      console.log("No matches found.");
+      request.flash("error", "No response received from GeminiAPI");
+      return;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+app.post("/add-natural", async (req, res) => {
+  await getDetailswithGemini(req.body.naturalText, req);
+  res.redirect("/sport");
+});
+
 app.get("/", async (request, response) => {
   if (request.user) {
     return response.redirect("/sport");
@@ -199,25 +307,6 @@ app.get(
     }
   }
 );
-
-app.post("/set-lang", (req, res) => {
-  try {
-    console.log("Current Language", i18next.language);
-    const selectedLang = req.body.language;
-    console.log("Selected Language", selectedLang);
-    i18next.changeLanguage(selectedLang);
-
-    setTimeout(() => {
-      console.log("Updated Language", i18next.language);
-    }, 500);
-
-    res.redirect(req.get("referer") || "/");
-  } catch (error) {
-    Sentry.captureException(error);
-    console.log(error);
-    return res.status(422).json(error);
-  }
-});
 
 app.post(
   "/sport",
@@ -290,6 +379,7 @@ app.post(
         userId: request.user.id,
         sportId: request.params.sportId,
       });
+      console.log(request.body.date);
       const names = request.body.names;
       const nameArr = names.split(",");
       for (let i = 0; i < nameArr.length; i++) {

@@ -9,6 +9,7 @@
                     <p><%=t(allUpcoming[i].sessionName)%></p>
                     <p style="display: inline;"><%=formatDate(new Date(allUpcoming[i].date)) %></p>
                     <p style="display: inline;"><%=formatTime(allUpcoming[i].time)%></p>
+                    <br/>
                 <%if (allUpcoming[i].playersNeeded === 0){%>
                     <p style="color:red; display: inline;"><%=t('Fully Booked')%></p>
                 <%}else{%>

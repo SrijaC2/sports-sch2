@@ -21,6 +21,7 @@
   "author": "srija",
   "license": "ISC",
   "dependencies": {
+    "@google/generative-ai": "^0.6.0",
     "@sentry/cli": "^2.31.0",
     "@sentry/node": "^7.110.0",
     "@sentry/profiling-node": "^7.110.0",
