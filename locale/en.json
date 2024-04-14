@@ -19,7 +19,7 @@
   "Tennis 0": "Tennis 0",
   "Tennis 1": "Tennis 1",
   "Fully Booked": "Fully Booked",
-  "CreateBtn":"Create",
-  "GenAI":"Create Sports Sessions with Generative AI",
-  "GenAIPlaceHolder":"Enter Session Details"
+  "CreateBtn": "Create",
+  "GenAI": "Create Sports Sessions with Generative AI",
+  "GenAIPlaceHolder": "Enter Session Details"
 }

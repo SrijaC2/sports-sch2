@@ -192,8 +192,8 @@ async function getDetailswithGemini(question, request) {
       "The output format should be consistent, sessionName : ,date: ,time: ,venue:" +
       "the example output is sport: Cricket, sessionName: Cricket 1, date: 2024-06-12, time: 19:00, venue: Bangalore" +
       "Return the output in the format 'sport: sessionName : date: time: venue:'. where date must and should be in the format YYYY-MM-DD and time should be in the format 24hr hh:mm" +
-      "Important make sure if sport is not specified in prompt return sport: null";
-    ("The prompt is:");
+      "Important make sure if sport is not specified in prompt return sport: null" +
+      "The prompt is:";
     const suggestion = await askGemini(systemPrompt + " " + question);
     if (suggestion) {
       console.log("Response from Gemini API:", suggestion);
