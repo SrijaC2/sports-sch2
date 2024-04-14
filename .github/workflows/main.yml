@@ -3,8 +3,8 @@ on: push
 
 # Environment Variables Configuration
 env:
-  PG_DATABASE: wd-sports-test2
-  PG_USER: postgres
+  PG_DATABASE: ${{ secrets.PG_USER }}
+  PG_USER: ${{ secrets.PG_USER }}
   PG_PASSWORD: ${{ secrets.POSTGRES_PW }}
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -23,9 +23,9 @@ jobs:
         image: postgres:11.7
         # Provide the password for postgres
         env:
-          POSTGRES_USER: postgres
+          POSTGRES_USER: ${{ secrets.PG_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PW }}
-          POSTGRES_DB: wd-sports-test2
+          POSTGRES_DB: ${{ secrets.PG_USER }}
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
