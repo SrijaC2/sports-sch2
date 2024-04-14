@@ -8,8 +8,8 @@ describe("Sport Application", () => {
   it("Signs up", () => {
     cy.visit(`${baseUrl}/signup`);
     cy.get('input[name="firstName"]').type("Test");
-    cy.get('input[name="lastName"]').type("User A");
-    cy.get('input[name="email"]').type("user.a@test.com");
+    cy.get('input[name="lastName"]').type("User B");
+    cy.get('input[name="email"]').type("user.b@test.com");
     cy.get('select[name="role"]').select("Admin");
     cy.get('input[name="password"]').type("12345678");
     cy.get('button[type="submit"]').click();
@@ -25,7 +25,7 @@ describe("Sport Application", () => {
   it("Logs in with valid credentials", () => {
     cy.visit(`${baseUrl}/login`);
     // Fill out the login form
-    cy.get('input[name="email"]').type("user.a@test.com");
+    cy.get('input[name="email"]').type("user.b@test.com");
     cy.get('input[name="password"]').type("12345678");
 
     // Submit the form
