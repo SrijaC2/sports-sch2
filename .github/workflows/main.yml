@@ -56,7 +56,7 @@ jobs:
           npx sequelize-cli db:drop
           npx sequelize-cli db:create
           npx sequelize-cli db:migrate
-          PORT=3500 npm run clean:start &
+          PORT=3500 npm run start &
           sleep 5
 
       - name: Run integration tests
