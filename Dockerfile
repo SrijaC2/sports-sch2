@@ -5,7 +5,7 @@ EXPOSE 3000
 
 FROM base as production
 ENV NODE_ENV=production 
-RUN npm install --ignore-scripts
+RUN npm install --ignore-scripts && npx sequelize-cli db:migrate
 COPY . /app
 CMD node index.js
 
