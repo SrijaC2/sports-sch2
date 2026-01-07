@@ -15,5 +15,6 @@ This is a production-ready Node.js application which aids in both the creation o
 - Built a CI/CD pipeline to automate testing, builds, and deployments.
 - Deployed the application in cluster mode using PM2 with environment-based configurations.
 - Containerized the application using Docker and Docker Compose for multi-service architecture.
+- Implemented internationalization and localization for multi-region support.
 - Applied structured error logging and debugging practices for efficient issue resolution.
-- Integrated Generative AI to interpret natural language input and enhance user interactions.
+- Integrated Generative AI (ChatGPT) to interpret natural language input and enhance user interactions.
